@@ -1,0 +1,220 @@
+[
+    {
+        "author": {
+            "email": "megger5968@students.ecpi.edu",
+            "name": "Megan Gerth"
+        },
+        "commit": "12341234",
+        "committer": {
+            "email": "megger5968@students.ecpi.edu",
+            "name": "Megan Gerth"
+        },
+        "message": "Week 1 CRUD operations - Redis",
+        "parent": [],
+        "repo_name": [
+            "Lab Project"
+        ],
+        "subject": "Week 1 CRUD operations - Redis",
+        "tree": ""
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "00000000660bebbac5f1c875840b0dee88725a41",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Use uint8_t instead of unsigned char\n",
+        "parent": [
+            "00000003ea706c37a672ca523972392fad83447a"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Use uint8_t instead of unsigned char",
+        "tree": "e931826296963f8d2d7f36dc65c092392f5b3b5d"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "0000000000abc668c5388237320e97d0dadae7b1",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         \n",
+        "parent": [
+            "0000000dab030888769a54aa1232843a64bb735c"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         ",
+        "tree": "a81685226f1cc12bdf78b1b3ef2a4ede2b4bfab9"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000003a7be8c8c1101c5fbb8ad87f132e9c3e",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Make readme examples consistent\n",
+        "parent": [
+            "00000009734f14533b8be957f0889d6c27373fb6"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Make readme examples consistent",
+        "tree": "4b7fa9f5d9672e034a06a51521dae4ea264b1d34"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000000fcd56c8536abd09cac5f2a54ba600c2",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Make methods static\n",
+        "parent": [
+            "0000000b36f80d90768b7792c4a42219618e734c"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Make methods static",
+        "tree": "c6c4a163a084ff60a344297a3c2efb826ea6d7ee"
+    },
+    {
+        "author": {
+            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
+            "name": "Adam Ryczkowski"
+        },
+        "commit": "0000000007d43ecb5ed16a3c47ebe236fc3b8213",
+        "committer": {
+            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
+            "name": "Adam Ryczkowski"
+        },
+        "message": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         \n",
+        "parent": [
+            "24046f689d376f2b893b396e74fa387dca9d1328"
+        ],
+        "repo_name": [
+            "adamryczkowski/puppet-bootstrap"
+        ],
+        "subject": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         ",
+        "tree": "848410b804a1015b443957eeeb7a094dfe3e7958"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000001d79104985aa75cd510d0049733c5026",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Update performance notes to account for smaller commit padding\n",
+        "parent": [
+            "0000000080642df4b411b3e265855e668e5239a4"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Update performance notes to account for smaller commit padding",
+        "tree": "4d746dffaa29ef9408f320987e887c1f72cfd10c"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000006ffb8fa73f8c1e33a9a3b284cfa1471f",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Fix link in installation instructions\n",
+        "parent": [
+            "000000068bf7704715cfe8f0708f6fd7514817ab"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Fix link in installation instructions",
+        "tree": "88cc34ce0ac15dad947233e10acc5188d3dcc3b2"
+    },
+    {
+        "author": {
+            "email": "dc76e9f0c0006e8f919e0c515c66dbba3982f785@recolic.net",
+            "name": "Recolic Keghart"
+        },
+        "commit": "000000006265577643cdcdefbc94aef903ffaf5e",
+        "committer": {
+            "email": "dc76e9f0c0006e8f919e0c515c66dbba3982f785@recolic.net",
+            "name": "Recolic Keghart"
+        },
+        "message": "Add hook to close_range function, solves #439. |0!\n",
+        "parent": [
+            "07c15a02f6890f56aa0b9341c27fc889956ab114"
+        ],
+        "repo_name": [
+            "rofl0r/proxychains-ng"
+        ],
+        "subject": "Add hook to close_range function, solves #439. |0!",
+        "tree": "012fe70cabbb5c1e6df3b9308b99fed811bc1c0d"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000000e8de4d8848f10f4f14b942d2cc76072",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         \n",
+        "parent": [
+            "0000000342be453074249fa7615ac3053e926135"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         ",
+        "tree": "9c2ff08bf7ed374eb5f6ffb3994d9c6578210174"
+    },
+    {
+        "author": {
+            "email": "2ce6dee46dc9bb5cb4516aadeb1130295bbbeb2f@archlinux.org",
+            "name": "orhun"
+        },
+        "commit": "00000000678da6b617932fe9b17b0ce57e397967",
+        "committer": {
+            "email": "2ce6dee46dc9bb5cb4516aadeb1130295bbbeb2f@archlinux.org",
+            "name": "orhun"
+        },
+        "message": "Move distro package instructions below 'linker errors' section\n",
+        "parent": [
+            "0000000e5bf140d3e4c39a1f200568081bc95d38"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Move distro package instructions below 'linker errors' section",
+        "tree": "6e7386f78e99cd18a4169e4e1e2accec883b0272"
+    }
+]
