@@ -1,130 +1,188 @@
 '''
 Name: Megan Gerth
 Date: 9/20/2026
-Assignment: 3.3 Lab Project
-Purpose: To showcase CRUD operations and querying by author on a Cassandra
-         database utilizing a Sample.json file.
+Assignment: Lab Project - Cassandra Edition
+Purpose: To showcase CRUD operations and author querying in an Apache 
+         Cassandra database utilizing Sample.json.
 '''
 
 import sys
-import redis
 import os
 import json
-from collections import Counter
+from cassandra.cluster import Cluster
 
 DIR = os.path.dirname(os.path.abspath(__file__))
-# Point directly to Sample.json
 JSON_FILE = os.path.join(DIR, "Sample.json")
 
+KEYSPACE = "git_keyspace"
+TABLE_NAME = "commits"
 
-def connect_redis():
+
+def connect_cassandra():
+    """Connect to local Cassandra cluster, create Keyspace and Table if missing."""
     try:
-        r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-        r.ping()
-        return r
-    except redis.ConnectionError:
-        print("Error: Could not connect to Redis server. Ensure Redis is running.")
+        cluster = Cluster(['127.0.0.1'], port=9042)
+        session = cluster.connect()
+
+        # Create Keyspace if it doesn't exist
+        session.execute(f"""
+            CREATE KEYSPACE IF NOT EXISTS {KEYSPACE}
+            WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': '1'}};
+        """)
+
+        session.set_keyspace(KEYSPACE)
+
+        # Create Table matching Sample.json structure
+        session.execute(f"""
+            CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
+                commit text PRIMARY KEY,
+                author_name text,
+                author_email text,
+                committer_name text,
+                committer_email text,
+                message text,
+                subject text,
+                tree text,
+                parent list<text>,
+                repo_name list<text>
+            );
+        """)
+
+        return session, cluster
+    except Exception as e:
+        print(f"Error: Could not connect to Cassandra cluster ({e}). Ensure Cassandra is running.")
         sys.exit(1)
 
 
-def redis_from_files(r):
-    """Seed Redis using array items inside Sample.json."""
+def seed_cassandra_from_file(session):
+    """Seed Cassandra table using array items inside Sample.json."""
     if not os.path.exists(JSON_FILE):
         print(f"Error: File '{JSON_FILE}' does not exist.")
         return
 
-    print("\n--- Seeding Redis Database from Sample.json ---")
+    print("\n--- Seeding Cassandra Database from Sample.json ---")
     try:
-        with open(JSON_FILE, 'r', encoding='utf-8-sig') as f:
-            records = json.load(f)
+        count_result = session.execute(f"SELECT COUNT(*) FROM {TABLE_NAME};")
+        row_count = count_result.one()[0]
 
-        if not isinstance(records, list):
-            records = [records]
+        if row_count == 0:
+            with open(JSON_FILE, 'r', encoding='utf-8-sig') as f:
+                records = json.load(f)
 
-        for record in records:
-            # Use the 'commit' hash as the primary key suffix
-            commit_hash = record.get('commit')
-            if commit_hash:
-                key_name = f"commit:{commit_hash}"
-                r.set(key_name, json.dumps(record))
-                print(f"Loaded record -> Redis Key: '{key_name}'")
+            if not isinstance(records, list):
+                records = [records]
+
+            insert_stmt = session.prepare(f"""
+                INSERT INTO {TABLE_NAME} (
+                    commit, author_name, author_email, committer_name, committer_email,
+                    message, subject, tree, parent, repo_name
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """)
+
+            for rec in records:
+                author = rec.get('author', {}) or {}
+                committer = rec.get('committer', {}) or {}
+
+                session.execute(insert_stmt, (
+                    rec.get('commit', ''),
+                    author.get('name', ''),
+                    author.get('email', ''),
+                    committer.get('name', ''),
+                    committer.get('email', ''),
+                    rec.get('message', ''),
+                    rec.get('subject', ''),
+                    rec.get('tree', ''),
+                    rec.get('parent', []),
+                    rec.get('repo_name', [])
+                ))
+
+            print(f"Loaded {len(records)} records into Cassandra table '{TABLE_NAME}'.")
+        else:
+            print(f"Table '{TABLE_NAME}' already contains data. Skipping initial seed.")
 
         print("--- Database Seeding Complete ---\n")
 
     except json.JSONDecodeError as e:
         print(f"Failed: Invalid JSON syntax in Sample.json ({e})")
     except Exception as e:
-        print(f"Failed to seed Redis: {e}")
+        print(f"Failed to seed Cassandra: {e}")
 
 
-def sync_redis_to_file(r):
-    """Save all 'commit:*' records back to Sample.json to keep disk in sync."""
-    keys = r.keys("commit:*")
-    updated_records = []
+def row_to_dict(row):
+    """Helper to convert Cassandra Row object into standard Sample.json format."""
+    return {
+        "author": {
+            "email": row.author_email or "",
+            "name": row.author_name or ""
+        },
+        "commit": row.commit,
+        "committer": {
+            "email": row.committer_email or "",
+            "name": row.committer_name or ""
+        },
+        "message": row.message or "",
+        "parent": list(row.parent) if row.parent else [],
+        "repo_name": list(row.repo_name) if row.repo_name else [],
+        "subject": row.subject or "",
+        "tree": row.tree or ""
+    }
 
-    for key in keys:
-        raw_data = r.get(key)
-        if raw_data:
-            updated_records.append(json.loads(raw_data))
+
+def sync_cassandra_to_file(session):
+    """Save all records from Cassandra table back to Sample.json."""
+    rows = session.execute(f"SELECT * FROM {TABLE_NAME};")
+    records = [row_to_dict(row) for row in rows]
 
     with open(JSON_FILE, 'w', encoding='utf-8') as f:
-        json.dump(updated_records, f, indent=4, ensure_ascii=False)
+        json.dump(records, f, indent=4, ensure_ascii=False)
 
 
-# --- REPORT GENERATION ---
+# --- QUERY BY AUTHOR ---
 
-def generate_author_report(r):
-    """Generate and print a formatted summary showing record counts per author."""
-    keys = r.keys("commit:*")
+def query_by_author(session):
+    """Search and display all commits created by a specific author name."""
+    search_name = input("\nEnter Author Name to search for: ").strip()
 
-    if not keys:
-        print("\nNo records found in Redis database.")
+    if not search_name:
+        print("Author name cannot be blank.")
         return
 
-    author_counts = Counter()
-    author_emails = {}
+    rows = session.execute(f"SELECT * FROM {TABLE_NAME};")
+    matching_records = []
 
-    for key in keys:
-        raw_data = r.get(key)
-        if raw_data:
-            try:
-                data = json.loads(raw_data)
-                author_obj = data.get("author", {})
-                name = author_obj.get("name", "Unknown Author").strip()
-                email = author_obj.get("email", "N/A").strip()
+    for row in rows:
+        author_name = row.author_name or ""
+        # Check for case-insensitive exact or partial match
+        if search_name.lower() in author_name.lower():
+            matching_records.append(row_to_dict(row))
 
-                author_counts[name] += 1
-                if name not in author_emails or author_emails[name] == "N/A":
-                    author_emails[name] = email
-            except json.JSONDecodeError:
-                continue
+    if not matching_records:
+        print(f"\nNo commit records found for author: '{search_name}'")
+        return
 
-    # Print Formatted Report
-    
-    print("\n--- AUTHOR RECORD CREATION REPORT ---")
-    print(f"{'Author Name':<25} | {'Email Address':<32} | {'Record Count':<12}")
-    print("-" * 73)
+    print(f"\n=========================================================================")
+    print(f"             SEARCH RESULTS FOR AUTHOR: '{search_name}' ({len(matching_records)} found)")
+    print(f"=========================================================================")
 
-    total_records = 0
-    for author, count in author_counts.most_common():
-        email = author_emails.get(author, "N/A")
-        print(f"{author:<25} | {email:<32} | {count:<12}")
-        total_records += count
+    for idx, rec in enumerate(matching_records, start=1):
+        print(f"\n[{idx}] Commit Hash: {rec['commit']}")
+        print(f"    Author   : {rec['author']['name']} <{rec['author']['email']}>")
+        print(f"    Committer: {rec['committer']['name']} <{rec['committer']['email']}>")
+        print(f"    Repo     : {', '.join(rec['repo_name']) if rec['repo_name'] else 'N/A'}")
+        print(f"    Message  : {rec['message'].strip()}")
 
-    print("-" * 73)
-    print(f"Total Authors: {len(author_counts):<10} | Total Records: {total_records}\n")
-    
+    print("=========================================================================\n")
 
 
 # --- CRUD OPERATIONS ---
 
-def create_record(r):
+def create_record(session):
     print("\n--- Create New Commit Record ---")
     commit_hash = input("Enter unique commit hash ID: ").strip()
-    key = f"commit:{commit_hash}"
 
-    if r.exists(key):
-        print(f"Key '{key}' already exists in Redis. Use Update instead.")
+    stmt = session.prepare(f"SELECT commit FROM {TABLE_NAME} WHERE commit = ?;")
+    if session.execute(stmt, [commit_hash]).one():
+        print(f"Commit '{commit_hash}' already exists in Cassandra. Use Update instead.")
         return
 
     # Prompt for author details
@@ -144,155 +202,172 @@ def create_record(r):
     parent_commit = input("Enter Parent Commit Hash (optional, press Enter to skip): ").strip()
     tree_hash = input("Enter Tree Hash (optional, press Enter to skip): ").strip()
 
-    new_record = {
-        "author": {
-            "email": author_email,
-            "name": author_name
-        },
-        "commit": commit_hash,
-        "committer": {
-            "email": committer_email,
-            "name": committer_name
-        },
-        "message": message,
-        "parent": [parent_commit] if parent_commit else [],
-        "repo_name": [repo_name] if repo_name else [],
-        "subject": message,
-        "tree": tree_hash
-    }
+    insert_stmt = session.prepare(f"""
+        INSERT INTO {TABLE_NAME} (
+            commit, author_name, author_email, committer_name, committer_email,
+            message, subject, tree, parent, repo_name
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """)
 
-    # Store in Redis
-    r.set(key, json.dumps(new_record))
+    session.execute(insert_stmt, (
+        commit_hash, author_name, author_email, committer_name, committer_email,
+        message, message, tree_hash,
+        [parent_commit] if parent_commit else [],
+        [repo_name] if repo_name else []
+    ))
 
-    # Sync array back to Sample.json file
-    sync_redis_to_file(r)
-    print(f"\nSuccess! Record created under key '{key}' and written to Sample.json.")
+    # Sync back to Sample.json file
+    sync_cassandra_to_file(session)
+    print(f"\nSuccess! Commit '{commit_hash}' inserted and saved to Sample.json.")
 
 
-def read_record(r):
-    commit_input = input("\nEnter Commit Hash or Key (e.g., commit:00000...): ").strip()
-    key = commit_input if commit_input.startswith("commit:") else f"commit:{commit_input}"
+def read_record(session):
+    commit_hash = input("\nEnter Commit Hash to search: ").strip()
 
-    raw_data = r.get(key)
-    if not raw_data:
-        print(f"Error: Key '{key}' does not exist in Redis.")
+    stmt = session.prepare(f"SELECT * FROM {TABLE_NAME} WHERE commit = ?;")
+    row = session.execute(stmt, [commit_hash]).one()
+
+    if not row:
+        print(f"Error: Commit '{commit_hash}' does not exist in Cassandra.")
         return
 
-    parsed_data = json.loads(raw_data)
-    print(f"\n--- Data for Key: '{key}' ---")
-    print(json.dumps(parsed_data, indent=4))
+    record = row_to_dict(row)
+    print(f"\n--- Data for Commit: '{commit_hash}' ---")
+    print(json.dumps(record, indent=4))
     print("------------------------------------")
 
 
-def update_record(r):
-    commit_input = input("\nEnter Commit Hash or Key to update: ").strip()
-    key = commit_input if commit_input.startswith("commit:") else f"commit:{commit_input}"
+def update_record(session):
+    commit_hash = input("\nEnter Commit Hash to update: ").strip()
 
-    raw_data = r.get(key)
-    if not raw_data:
-        print(f"Error: Key '{key}' does not exist.")
+    stmt = session.prepare(f"SELECT * FROM {TABLE_NAME} WHERE commit = ?;")
+    row = session.execute(stmt, [commit_hash]).one()
+
+    if not row:
+        print(f"Error: Commit '{commit_hash}' does not exist.")
         return
 
-    data = json.loads(raw_data)
-    print(f"\nCurrent Data for '{key}':")
-    print(json.dumps(data, indent=4))
+    record = row_to_dict(row)
+    print(f"\nCurrent Data for '{commit_hash}':")
+    print(json.dumps(record, indent=4))
 
     field = input("\nEnter field to update (author, committer, message, repo_name, parent, tree): ").strip().lower()
 
-    # Handle nested object structures (author / committer)
-    if field in ["author", "committer"]:
-        print(f"\n--- Updating {field.capitalize()} Information ---")
-        current_sub = data.get(field, {})
+    if field == "author":
+        print("\n--- Updating Author Information ---")
+        name = input(f"Enter Author Name (leave blank to keep '{record['author']['name']}'): ").strip()
+        email = input(f"Enter Author Email (leave blank to keep '{record['author']['email']}'): ").strip()
 
-        name = input(f"Enter {field} Name (leave blank to keep '{current_sub.get('name', '')}'): ").strip()
-        email = input(f"Enter {field} Email (leave blank to keep '{current_sub.get('email', '')}'): ").strip()
+        new_name = name if name else record['author']['name']
+        new_email = email if email else record['author']['email']
 
-        data[field] = {
-            "name": name if name else current_sub.get("name", ""),
-            "email": email if email else current_sub.get("email", "")
-        }
+        u_stmt = session.prepare(f"UPDATE {TABLE_NAME} SET author_name = ?, author_email = ? WHERE commit = ?;")
+        session.execute(u_stmt, (new_name, new_email, commit_hash))
 
-    # Handle array fields (repo_name / parent)
+    elif field == "committer":
+        print("\n--- Updating Committer Information ---")
+        name = input(f"Enter Committer Name (leave blank to keep '{record['committer']['name']}'): ").strip()
+        email = input(f"Enter Committer Email (leave blank to keep '{record['committer']['email']}'): ").strip()
+
+        new_name = name if name else record['committer']['name']
+        new_email = email if email else record['committer']['email']
+
+        u_stmt = session.prepare(f"UPDATE {TABLE_NAME} SET committer_name = ?, committer_email = ? WHERE commit = ?;")
+        session.execute(u_stmt, (new_name, new_email, commit_hash))
+
     elif field in ["repo_name", "parent"]:
         val = input(f"Enter new value for {field} array (comma-separated if multiple): ").strip()
-        data[field] = [item.strip() for item in val.split(",")] if val else []
+        new_list = [item.strip() for item in val.split(",")] if val else []
 
-    # Handle standard string fields (message, subject, tree)
+        u_stmt = session.prepare(f"UPDATE {TABLE_NAME} SET {field} = ? WHERE commit = ?;")
+        session.execute(u_stmt, (new_list, commit_hash))
+
+    elif field == "message":
+        value = input("Enter new message value: ").strip()
+        u_stmt = session.prepare(f"UPDATE {TABLE_NAME} SET message = ?, subject = ? WHERE commit = ?;")
+        session.execute(u_stmt, (value, value, commit_hash))
+
+    elif field == "tree":
+        value = input("Enter new tree value: ").strip()
+        u_stmt = session.prepare(f"UPDATE {TABLE_NAME} SET tree = ? WHERE commit = ?;")
+        session.execute(u_stmt, (value, commit_hash))
+
     else:
-        value = input(f"Enter new value for '{field}': ").strip()
-        data[field] = value
-        # Automatically keep subject in sync if message changes
-        if field == "message":
-            data["subject"] = value
-
-    # Save to Redis and disk
-    r.set(key, json.dumps(data))
-    sync_redis_to_file(r)
-    print(f"\nSuccess! Key '{key}' updated in Redis and synchronized to Sample.json.")
-
-
-def delete_record(r):
-    commit_input = input("\nEnter the Commit Hash or Key to delete: ").strip()
-    key = commit_input if commit_input.startswith("commit:") else f"commit:{commit_input}"
-
-    if not r.exists(key):
-        print(f"Error: Key '{key}' does not exist.")
+        print(f"Field '{field}' is invalid or cannot be modified.")
         return
 
-    confirm = input(f"Are you sure you want to delete '{key}'? (y/n): ").strip().lower()
+    # Sync to disk
+    sync_cassandra_to_file(session)
+    print(f"\nSuccess! Commit '{commit_hash}' updated in Cassandra and synchronized to Sample.json.")
+
+
+def delete_record(session):
+    commit_hash = input("\nEnter the Commit Hash to delete: ").strip()
+
+    stmt = session.prepare(f"SELECT commit FROM {TABLE_NAME} WHERE commit = ?;")
+    if not session.execute(stmt, [commit_hash]).one():
+        print(f"Error: Commit '{commit_hash}' does not exist.")
+        return
+
+    confirm = input(f"Are you sure you want to delete '{commit_hash}'? (y/n): ").strip().lower()
     if confirm == 'y':
-        r.delete(key)
-        sync_redis_to_file(r)
-        print(f"Key '{key}' deleted from Redis and Sample.json updated.")
+        del_stmt = session.prepare(f"DELETE FROM {TABLE_NAME} WHERE commit = ?;")
+        session.execute(del_stmt, [commit_hash])
+        sync_cassandra_to_file(session)
+        print(f"Commit '{commit_hash}' deleted from Cassandra and Sample.json updated.")
     else:
         print("Deletion cancelled.")
 
 
-def delete_all_data(r):
-    confirm = input("WARNING: Erase ALL keys in Redis and wipe Sample.json? (yes/no): ").strip().lower()
+def delete_all_data(session):
+    confirm = input("WARNING: Erase ALL records in Cassandra table and wipe Sample.json? (yes/no): ").strip().lower()
     if confirm == 'yes':
-        r.flushdb()
+        session.execute(f"TRUNCATE {TABLE_NAME};")
         with open(JSON_FILE, 'w', encoding='utf-8') as f:
             json.dump([], f)
-        print("All records successfully deleted from Redis and disk.")
+        print("All records successfully deleted from Cassandra and disk.")
     else:
         print("Operation cancelled.")
 
 
 def main():
-    r = connect_redis()
-    redis_from_files(r)
+    session, cluster = connect_cassandra()
+    seed_cassandra_from_file(session)
 
-    while True:
-        print("\n--- REDIS JSON MANAGEMENT MENU ---")
-        print("1. Create a new record")
-        print("2. Read a record")
-        print("3. Update a record")
-        print("4. Delete a specific commit record")
-        print("5. Delete ALL data from database")
-        print("6. View Author Record Summary Report")
-        print("7. Exit")
-        print("----------------------------------")
+    try:
+        while True:
+            print("\n--- CASSANDRA JSON MANAGEMENT MENU ---")
+            print("1. Create a new record")
+            print("2. Read a record")
+            print("3. Update a record")
+            print("4. Delete a specific commit record")
+            print("5. Delete ALL data from database")
+            print("6. Query records by author name")
+            print("7. Exit")
+            print("--------------------------------------")
 
-        choice = input("Enter your choice (1-7): ").strip()
+            choice = input("Enter your choice (1-7): ").strip()
 
-        if choice == '1':
-            create_record(r)
-        elif choice == '2':
-            read_record(r)
-        elif choice == '3':
-            update_record(r)
-        elif choice == '4':
-            delete_record(r)
-        elif choice == '5':
-            delete_all_data(r)
-        elif choice == '6':
-            generate_author_report(r)
-        elif choice == '7':
-            print("Exiting application. Goodbye!")
-            sys.exit(0)
-        else:
-            print("Invalid choice. Please enter a number from 1 to 7.")
+            if choice == '1':
+                create_record(session)
+            elif choice == '2':
+                read_record(session)
+            elif choice == '3':
+                update_record(session)
+            elif choice == '4':
+                delete_record(session)
+            elif choice == '5':
+                delete_all_data(session)
+            elif choice == '6':
+                query_by_author(session)
+            elif choice == '7':
+                print("Exiting application. Goodbye!")
+                break
+            else:
+                print("Invalid choice. Please enter a number from 1 to 7.")
+
+    finally:
+        cluster.shutdown()
 
 
 if __name__ == '__main__':
