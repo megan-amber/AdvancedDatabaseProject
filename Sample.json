@@ -1,61 +1,61 @@
 [
     {
         "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000000e8de4d8848f10f4f14b942d2cc76072",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         \n",
+        "parent": [
+            "0000000342be453074249fa7615ac3053e926135"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         ",
+        "tree": "9c2ff08bf7ed374eb5f6ffb3994d9c6578210174"
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000001d79104985aa75cd510d0049733c5026",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Update performance notes to account for smaller commit padding\n",
+        "parent": [
+            "0000000080642df4b411b3e265855e668e5239a4"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Update performance notes to account for smaller commit padding",
+        "tree": "4d746dffaa29ef9408f320987e887c1f72cfd10c"
+    },
+    {
+        "author": {
             "email": "megger5968@students.ecpi.edu",
             "name": "Megan Gerth"
         },
-        "commit": "12341234",
+        "commit": "34563456",
         "committer": {
             "email": "megger5968@students.ecpi.edu",
             "name": "Megan Gerth"
         },
-        "message": "Week 1 CRUD operations - Redis",
+        "message": "Week 3 Update the database",
         "parent": [],
         "repo_name": [
-            "Lab Project"
+            "AdvancedDatabases"
         ],
-        "subject": "Week 1 CRUD operations - Redis",
+        "subject": "Week 3 Update the database",
         "tree": ""
-    },
-    {
-        "author": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "commit": "00000000660bebbac5f1c875840b0dee88725a41",
-        "committer": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "message": "Use uint8_t instead of unsigned char\n",
-        "parent": [
-            "00000003ea706c37a672ca523972392fad83447a"
-        ],
-        "repo_name": [
-            "not-an-aardvark/lucky-commit"
-        ],
-        "subject": "Use uint8_t instead of unsigned char",
-        "tree": "e931826296963f8d2d7f36dc65c092392f5b3b5d"
-    },
-    {
-        "author": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "commit": "0000000000abc668c5388237320e97d0dadae7b1",
-        "committer": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "message": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         \n",
-        "parent": [
-            "0000000dab030888769a54aa1232843a64bb735c"
-        ],
-        "repo_name": [
-            "not-an-aardvark/lucky-commit"
-        ],
-        "subject": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         ",
-        "tree": "a81685226f1cc12bdf78b1b3ef2a4ede2b4bfab9"
     },
     {
         "author": {
@@ -82,60 +82,40 @@
             "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
             "name": "Teddy Katz"
         },
-        "commit": "000000000fcd56c8536abd09cac5f2a54ba600c2",
+        "commit": "0000000000abc668c5388237320e97d0dadae7b1",
         "committer": {
             "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
             "name": "Teddy Katz"
         },
-        "message": "Make methods static\n",
+        "message": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         \n",
         "parent": [
-            "0000000b36f80d90768b7792c4a42219618e734c"
+            "0000000dab030888769a54aa1232843a64bb735c"
         ],
         "repo_name": [
             "not-an-aardvark/lucky-commit"
         ],
-        "subject": "Make methods static",
-        "tree": "c6c4a163a084ff60a344297a3c2efb826ea6d7ee"
-    },
-    {
-        "author": {
-            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
-            "name": "Adam Ryczkowski"
-        },
-        "commit": "0000000007d43ecb5ed16a3c47ebe236fc3b8213",
-        "committer": {
-            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
-            "name": "Adam Ryczkowski"
-        },
-        "message": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         \n",
-        "parent": [
-            "24046f689d376f2b893b396e74fa387dca9d1328"
-        ],
-        "repo_name": [
-            "adamryczkowski/puppet-bootstrap"
-        ],
-        "subject": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         ",
-        "tree": "848410b804a1015b443957eeeb7a094dfe3e7958"
+        "subject": "v2.0.0 \t\t \t\t \t \t\t \t\t\t \t\t \t\t \t\t\t\t\t   \t \t \t\t\t\t         ",
+        "tree": "a81685226f1cc12bdf78b1b3ef2a4ede2b4bfab9"
     },
     {
         "author": {
             "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
             "name": "Teddy Katz"
         },
-        "commit": "000000001d79104985aa75cd510d0049733c5026",
+        "commit": "00000000660bebbac5f1c875840b0dee88725a41",
         "committer": {
             "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
             "name": "Teddy Katz"
         },
-        "message": "Update performance notes to account for smaller commit padding\n",
+        "message": "Use uint8_t instead of unsigned char\n",
         "parent": [
-            "0000000080642df4b411b3e265855e668e5239a4"
+            "00000003ea706c37a672ca523972392fad83447a"
         ],
         "repo_name": [
             "not-an-aardvark/lucky-commit"
         ],
-        "subject": "Update performance notes to account for smaller commit padding",
-        "tree": "4d746dffaa29ef9408f320987e887c1f72cfd10c"
+        "subject": "Use uint8_t instead of unsigned char",
+        "tree": "e931826296963f8d2d7f36dc65c092392f5b3b5d"
     },
     {
         "author": {
@@ -159,6 +139,26 @@
     },
     {
         "author": {
+            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
+            "name": "Adam Ryczkowski"
+        },
+        "commit": "0000000007d43ecb5ed16a3c47ebe236fc3b8213",
+        "committer": {
+            "email": "0e18f44c1fec03ec4083422cb58ba6a09ac4fb2a@statystyka.net",
+            "name": "Adam Ryczkowski"
+        },
+        "message": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         \n",
+        "parent": [
+            "24046f689d376f2b893b396e74fa387dca9d1328"
+        ],
+        "repo_name": [
+            "adamryczkowski/puppet-bootstrap"
+        ],
+        "subject": "Upgrades Adama-docs, version bump for CUDA, and fix to the i3wm install script \t \t \t \t\t \t \t\t \t   \t     \t\t\t\t   \t \t\t         ",
+        "tree": "848410b804a1015b443957eeeb7a094dfe3e7958"
+    },
+    {
+        "author": {
             "email": "dc76e9f0c0006e8f919e0c515c66dbba3982f785@recolic.net",
             "name": "Recolic Keghart"
         },
@@ -176,26 +176,6 @@
         ],
         "subject": "Add hook to close_range function, solves #439. |0!",
         "tree": "012fe70cabbb5c1e6df3b9308b99fed811bc1c0d"
-    },
-    {
-        "author": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "commit": "000000000e8de4d8848f10f4f14b942d2cc76072",
-        "committer": {
-            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
-            "name": "Teddy Katz"
-        },
-        "message": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         \n",
-        "parent": [
-            "0000000342be453074249fa7615ac3053e926135"
-        ],
-        "repo_name": [
-            "not-an-aardvark/lucky-commit"
-        ],
-        "subject": "v2.0.5 \t \t \t   \t \t \t    \t \t \t   \t\t\t \t     \t\t         ",
-        "tree": "9c2ff08bf7ed374eb5f6ffb3994d9c6578210174"
     },
     {
         "author": {
@@ -222,17 +202,37 @@
             "email": "megger5968@students.ecpi.edu",
             "name": "Megan Gerth"
         },
-        "commit": "23452345",
+        "commit": "12341234",
         "committer": {
             "email": "megger5968@students.ecpi.edu",
             "name": "Megan Gerth"
         },
-        "message": "Week 2 MongoDB Program",
+        "message": "Week 1 CRUD operations - Redis",
         "parent": [],
         "repo_name": [
-            "AdvancedDatabasesProject"
+            "Lab Project"
         ],
-        "subject": "Week 2 MongoDB Program",
+        "subject": "Week 1 CRUD operations - Redis",
         "tree": ""
+    },
+    {
+        "author": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "commit": "000000000fcd56c8536abd09cac5f2a54ba600c2",
+        "committer": {
+            "email": "37c267b2cac445eb74ab951fdccc99c0a0d53d76@gmail.com",
+            "name": "Teddy Katz"
+        },
+        "message": "Make methods static\n",
+        "parent": [
+            "0000000b36f80d90768b7792c4a42219618e734c"
+        ],
+        "repo_name": [
+            "not-an-aardvark/lucky-commit"
+        ],
+        "subject": "Make methods static",
+        "tree": "c6c4a163a084ff60a344297a3c2efb826ea6d7ee"
     }
 ]
