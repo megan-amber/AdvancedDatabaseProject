@@ -252,5 +252,23 @@
         ],
         "subject": "Week 4 entry",
         "tree": ""
+    },
+    {
+        "author": {
+            "email": "megan.gerth@gmail.com",
+            "name": "Megan"
+        },
+        "commit": "56785678",
+        "committer": {
+            "email": "megan.gerth@gmail.com",
+            "name": "Megan"
+        },
+        "message": "Week 5 Record Update with \"New\" Author",
+        "parent": [],
+        "repo_name": [
+            "AdvancedDatabases"
+        ],
+        "subject": "Week 5 Record Update with \"New\" Author",
+        "tree": ""
     }
 ]
